@@ -7,13 +7,14 @@ services:
             dockerfile: dockerfile
         image: dch/mysql
         container_name: mysql-master
-        network_mode: bridge
+        networks: 
+            - backend
         volumes: 
             - ./data1:/var/lib/mysql_data/
         hostname: mysql-master
         environment:
             - DB_NAME=test
-            - DB_USER=user
+            - DB_USER=replication_user
             - DB_PASS=toto
         ports: 
             - 3306:3306
@@ -22,15 +23,22 @@ services:
     mysql-slave:
         image: dch/mysql
         container_name: mysql-slave
-        network_mode: bridge
+        networks:
+            - backend
         volumes: 
             - ./data2:/var/lib/mysql_data/
         hostname: mysql-slave
         environment:
             - DB_NAME=test
-            - DB_USER=user
+            - DB_USER=replication_user
             - DB_PASS=toto
         ports: 
              - 3307:3306
         tty: true
 
+networks:
+    backend:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.16.0.0/24
