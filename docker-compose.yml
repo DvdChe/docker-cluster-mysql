@@ -1,0 +1,36 @@
+version: '2'
+
+services:
+    mysql-master:
+        build:
+            context: .
+            dockerfile: dockerfile
+        image: dch/mysql
+        container_name: mysql-master
+        network_mode: bridge
+        volumes: 
+            - ./data1:/var/lib/mysql_data/
+        hostname: mysql-master
+        environment:
+            - DB_NAME=test
+            - DB_USER=user
+            - DB_PASS=toto
+        ports: 
+            - 3306:3306
+        tty: true
+    
+    mysql-slave:
+        image: dch/mysql
+        container_name: mysql-slave
+        network_mode: bridge
+        volumes: 
+            - ./data2:/var/lib/mysql_data/
+        hostname: mysql-slave
+        environment:
+            - DB_NAME=test
+            - DB_USER=user
+            - DB_PASS=toto
+        ports: 
+             - 3307:3306
+        tty: true
+
